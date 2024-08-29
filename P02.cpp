@@ -23,20 +23,17 @@ typedef unsigned long long ull;
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define sum(a) accumulate(a, a + sizeof(a)/sizeof(a[0]), 0)
 
-const int N = 1e5;
+const int N = 10001;
 int n, A[N];
 FILE *inp, *out;
 
-int main(){
+int main() {
     inp=freopen("INP/P02.txt", "r", stdin);
     out=freopen("OUT/P02.txt", "w", stdout);
 
     fscanf(inp,"%d",&n);
-    FOR(i, 0, n-1) fscanf(inp,"%d",&A[i]);
-
-    FOR(i, 0, n-1) cout << A[i];
-
-    cout<<endl;
+    cout<<n<<endl;
+    FOR(i, 1, n) fscanf(inp,"%d",&A[i]);
 
     int minAvg = 0;
 
@@ -47,11 +44,13 @@ int main(){
                 A[k] = 0;
             }
             int avg = sum(A)/(n - windowSize);
-            minAvg = minAvg<avg?minAvg:avg;
+            minAvg = minAvg < avg ? minAvg : avg;
         }
     }
+
     fprintf(out,"%d", minAvg);
-    cout<<minAvg<<endl;
+    fclose(inp);
+    fclose(out);
     
     return 0;
 }

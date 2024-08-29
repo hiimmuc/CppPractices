@@ -22,8 +22,8 @@ int n, a[N], b[N], F[2][N];
 FILE *inp, *out;
 
 int main() {
-    inp = freopen("INP/P01.TXT", "r", stdin);
-    out = freopen("OUT/P01.TXT", "w", stdout);
+    inp = freopen("INP/P00.TXT", "r", stdin);
+    out = freopen("OUT/P00.TXT", "w", stdout);
 
     fscanf(inp, "%d", &n);
     FOR(i,1,n) fscanf(inp, "%d%d", &a[i], &b[i]);
