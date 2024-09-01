@@ -64,14 +64,15 @@ int main() {
                 }
             }
             
-            float avg = (float) sum(dp[w + (L - 1) * (n - 1)]) / (n - (w + 1));
+            for(int i = 0; i < n; i++) cout << dp[w + (L - 1) * (n - 1)][i] << " ";
+            cout << endl;
 
+            float avg = (float) sum(dp[w + (L - 1) * (n - 1)]) / (n - (w + 1));
             minAvg = min(minAvg, avg);
         }
     }
 
     // cout << minAvg << endl;
-
     fprintf(out,"%.3f", minAvg);
     fclose(inp);
     fclose(out);
