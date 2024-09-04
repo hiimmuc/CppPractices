@@ -8,8 +8,9 @@ template <class T>
 class Node
 {
     public:
-        int data;
+        T data;
         Node<T> *next;
+
         Node<T>(T data)
         {
             this->data = data;
@@ -29,9 +30,9 @@ public:
         count = 0;
     };
 
-    void insertBeg(T value){
+    void insertBeg(T data){
         ++count;
-        Node<T> *temp = new Node(value);
+        Node<T> *temp = new Node<T>(data);
         if(head == NULL)
         {
             head = tail = temp;
@@ -41,9 +42,9 @@ public:
         head = temp;
     };
 
-    void insertEnd(T value){
+    void insertEnd(T data){
         ++count;
-        Node<T> *temp = new Node(value);
+        Node<T> *temp = new Node<T>(data);
         if(head == NULL)
         {
             head = tail = temp;
@@ -53,14 +54,14 @@ public:
         tail = temp;
     };
 
-    void insertPos(T value, int pos){
+    void insertPos(T data, int pos){
         ++count;
         if(pos < 1 || pos > count)
         {
             cout << "\nInvalid position.\n";
             return ;
         }
-        Node<T> *temp = new Node(value);
+        Node<T> *temp = new Node<T>(data);
         if(pos == 1)
         {
             if(head == NULL)
@@ -112,7 +113,7 @@ public:
         }
         Node<T> *ptr = temp->next;
         temp->next = NULL;
-        // tail = temp;
+        tail = temp;
         delete ptr;
         --count;
     };
@@ -205,7 +206,7 @@ public:
         return false;
     };
 
-    void search(T value){
+    void search(T data){
         if(head == NULL)
         {
             cout << "\nThe list is empty.\n";
@@ -216,16 +217,16 @@ public:
         Node<T> *temp = head;
         while(temp != NULL)
         {
-            if(temp->data == value)
+            if(temp->data == data)
             {
-                cout << "\n" << value << " found at position: " << i << "\n";
+                cout << "\n" << data << " found at position: " << i << "\n";
                 found = true;
             }
             temp = temp->next;
             ++i;
         }
         if(found == false)
-            cout << "\n" << value << " is NOT present in the list.\n";
+            cout << "\n" << data << " is NOT present in the list.\n";
     };
 };
 
@@ -233,7 +234,7 @@ public:
 
 int main()
 {
-    LinkedList<int> var;
+    LinkedList<float> var;
     int option, input, position;
     do {
         cout << "\n\nLINKED LIST:\n";
@@ -253,15 +254,15 @@ int main()
         cout << "\n\nEnter your option: ";
         cin >> option;
         switch (option) {
-            case 1: cout << "\nEnter a value: ";
+            case 1: cout << "\nEnter a data: ";
                     cin >> input;
                     var.insertBeg(input);
                     break;
-            case 2: cout << "\nEnter a value: ";
+            case 2: cout << "\nEnter a data: ";
                     cin >> input;
                     var.insertEnd(input);
                     break;
-            case 3: cout << "\nEnter a value: ";
+            case 3: cout << "\nEnter a data: ";
                     cin >> input;
                     cout << "\nEnter a position: ";
                     cin >> position;
@@ -285,7 +286,7 @@ int main()
                     break;
             case 10:var.reverseRec(var.head);
                     break;
-            case 11:cout << "\nEnter a value: ";
+            case 11:cout << "\nEnter a data: ";
                     cin >> input;
                     var.search(input);
                     break;

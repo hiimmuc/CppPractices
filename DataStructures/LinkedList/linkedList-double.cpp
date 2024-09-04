@@ -8,7 +8,7 @@ template <class T>
 class Node
 {
 public:
-    int data;
+    T data;
     Node<T> *prev, *next;
     Node<T>(T data)
     {
@@ -28,7 +28,7 @@ public:
     };
 
     void insertBeg(T value){
-        Node<T> *temp = new Node(value);
+        Node<T> *temp = new Node<T>(value);
         if(head == NULL)
         {
             head = tail = temp;
@@ -40,7 +40,7 @@ public:
     };
 
     void insertEnd(T value){
-        Node<T> *temp = new Node(value);
+        Node<T> *temp = new Node<T>(value);
         if(head == NULL)
         {
             head = tail = temp;
@@ -83,7 +83,6 @@ public:
         cout << "\n";
     };
 };
-
 
 
 
