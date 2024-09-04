@@ -40,7 +40,7 @@ const int MAX_QUERY = 1e5;
 char DP[MAX_LEN][MAX_QUERY];
 
 int main () {
-    bool debug = true;
+    bool debug = false;
     if(debug){
         FILE *inp, *out;
         int correct = 0;
@@ -65,6 +65,22 @@ int main () {
         }
     }
     else{
+        int q;
+        string S;
+        cin >> S;
+        cin >> q;
+        
+        FOR(i, 0, q){
+            int start, end;
+            cin >> start >> end;
+            if(palindrome(S.substr(start - 1, end - start + 1))){
+                cout << "YES" << endl;
+            }
+            else{
+                cout << "NO" << endl;
+            }
+  
+        }
     }
     return 0;
 }
