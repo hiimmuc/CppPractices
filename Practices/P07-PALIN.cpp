@@ -1,5 +1,16 @@
+/**
+ * @file P07-PALIN.cpp  (Practices/P07-PALIN.cpp)
+ * @author Vit hoc bai (thaovan.140902@gmail.com)
+ * @brief Palindrome problem: Given a string S, and q queries, each query is a pair of integers (start, end). 
+ * |S| <= 10^5, 1 <= q <= 10^5, 1 <= start <= end <= |S|; 
+ * 1s time limit, 128MB memory limit
+ * @version 0.1
+ * @date 2024-09-05
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
-// #include "bits/stdc++.h"
 #include <iostream>
 
 using namespace std;
@@ -34,13 +45,30 @@ bool palindrome(string s){
     return true; 
 }
 
-const int MAX_LEN = 1e5;
-const int MAX_QUERY = 1e5;
 
-char DP[MAX_LEN][MAX_QUERY];
+bool isPalindrome(const std::string &str)
+{
+    // std::equal(str.begin(), str.begin()+str.size()/2, str.rbegin(), str.rbegin()+str.size()/2);
+
+  auto itStop = str.begin() + str.size() / 2;
+  auto itBegin = str.begin();
+  auto itReverse = str.rbegin();
+  while (itBegin != itStop) {
+    if (*itBegin != *itReverse)
+      return false;
+    else {
+      itBegin++;
+      itReverse++;
+    }
+  }
+
+  return true;
+
+}
 
 int main () {
-    bool debug = false;
+    faster;
+    bool debug = true;
     if(debug){
         FILE *inp, *out;
         int correct = 0;
@@ -55,7 +83,7 @@ int main () {
         FOR(i, 0, q){
             int start, end;
             cin >> start >> end;
-            if(palindrome(S.substr(start - 1, end - start + 1))){
+            if(isPalindrome(S.substr(start - 1, end - start + 1))){
                 cout << "YES" << endl;
             }
             else{
@@ -69,11 +97,11 @@ int main () {
         string S;
         cin >> S;
         cin >> q;
-        
+
         FOR(i, 0, q){
             int start, end;
             cin >> start >> end;
-            if(palindrome(S.substr(start - 1, end - start + 1))){
+            if(isPalindrome(S.substr(start - 1, end - start + 1))){
                 cout << "YES" << endl;
             }
             else{
