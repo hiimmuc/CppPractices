@@ -12,8 +12,10 @@
  */
 
 #include <iostream>
+// #include <chrono>
 
 using namespace std;
+// using namespace std::chrono;
 
 typedef long long ll;
 typedef unsigned long long ull;
@@ -33,42 +35,59 @@ typedef unsigned long long ull;
 #define fillchar(a,x) memset(a, x, sizeof (a))
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-bool palindrome(string s){
-    int left = 0, right = s.length() - 1; 
-    while (left < right) { 
-        if (s[left] != s[right]) { 
-            return false; 
-        } 
-        left++; 
-        right--; 
-    } 
-    return true; 
-}
+// bool palindrome(string s){
+//     int left = 0, right = s.length() - 1; 
+//     while (left < right) { 
+//         if (s[left] != s[right]) { 
+//             return false; 
+//         } 
+//         left++; 
+//         right--; 
+//     } 
+//     return true; 
+// }
 
 
-bool isPalindrome(const std::string &str)
+// bool isPalindrome(const std::string &str)
+// {
+//     // std::equal(str.begin(), str.begin()+str.size()/2, str.rbegin(), str.rbegin()+str.size()/2);
+
+//   auto itStop = str.begin() + str.size() / 2;
+//   auto itBegin = str.begin();
+//   auto itReverse = str.rbegin();
+//   while (itBegin != itStop) {
+//     if (*itBegin != *itReverse)
+//       return false;
+//     else {
+//       itBegin++;
+//       itReverse++;
+//     }
+//   }
+
+//   return true;
+
+// }
+
+
+bool IsPalindrome(const std::string& str)
 {
-    // std::equal(str.begin(), str.begin()+str.size()/2, str.rbegin(), str.rbegin()+str.size()/2);
-
-  auto itStop = str.begin() + str.size() / 2;
-  auto itBegin = str.begin();
-  auto itReverse = str.rbegin();
-  while (itBegin != itStop) {
-    if (*itBegin != *itReverse)
-      return false;
-    else {
-      itBegin++;
-      itReverse++;
+    const size_t N = str.size();
+    const size_t N_half = N / 2;
+    for(size_t i=0; i<N_half; i++)
+    {
+        if( str[i] != str[N-1-i])
+        {
+            return false;
+        }
     }
-  }
-
-  return true;
-
+    return true;
 }
 
 int main () {
     faster;
     bool debug = true;
+    // Get starting timepoint
+    // auto start = high_resolution_clock::now();
     if(debug){
         FILE *inp, *out;
         int correct = 0;
@@ -79,11 +98,14 @@ int main () {
         string S;
         cin >> S;
         cin >> q;
+        // use dp to store the result of each query, with from i,j, i++ , j-- util i = j
+        // then if the next query is inside, we can return True, for example, 
+        // if 1-5 is palindrome, then 2-4 is also palindrome
 
         FOR(i, 0, q){
             int start, end;
             cin >> start >> end;
-            if(isPalindrome(S.substr(start - 1, end - start + 1))){
+            if(IsPalindrome(S.substr(start - 1, end - start + 1))){
                 cout << "YES" << endl;
             }
             else{
@@ -91,6 +113,18 @@ int main () {
             }
   
         }
+         
+        // // Get ending timepoint
+        // auto stop = high_resolution_clock::now();
+    
+        // // Get duration. Substart timepoints to 
+        // // get duration. To cast it to proper unit
+        // // use duration cast method
+        // auto duration = duration_cast<microseconds>(stop - start);
+    
+        // cout << "Time taken by function: "
+        //     << duration.count() << " microseconds" << endl;
+    
     }
     else{
         int q;
@@ -101,7 +135,7 @@ int main () {
         FOR(i, 0, q){
             int start, end;
             cin >> start >> end;
-            if(isPalindrome(S.substr(start - 1, end - start + 1))){
+            if(IsPalindrome(S.substr(start - 1, end - start + 1))){
                 cout << "YES" << endl;
             }
             else{
