@@ -12,10 +12,12 @@
  */
 
 #include <iostream>
-// #include <chrono>
+#include <chrono>
+#include <cstring>
+#include <cstdint>
 
 using namespace std;
-// using namespace std::chrono;
+using namespace std::chrono;
 
 typedef long long ll;
 typedef unsigned long long ull;
@@ -69,7 +71,7 @@ typedef unsigned long long ull;
 // }
 
 
-bool IsPalindrome(const std::string& str)
+bool IsPalindrome(const string& str)
 {
     const size_t N = str.size();
     const size_t N_half = N / 2;
@@ -83,11 +85,62 @@ bool IsPalindrome(const std::string& str)
     return true;
 }
 
+inline uint32_t swap(const uint32_t& val)
+{
+  union {
+    char c[4];
+    uint32_t n;
+  } data;
+  data.n = val;
+  std::swap(data.c[0], data.c[3]);
+  std::swap(data.c[1], data.c[2]);
+  return data.n;
+}
+
+inline bool IsPalindromeWord(const std::string& str)
+{
+    const size_t N = str.size();
+    const size_t N_half = (N/2);
+    const size_t S = sizeof(uint32_t);
+    // number of words of size S in N_half
+    const size_t N_words = (N_half / S);
+
+    // example: if N = 18, half string is 9 bytes and
+    // we need to compare 2 pairs of words and 1 pair of chars
+
+    size_t index = 0;
+
+    for(size_t i=0; i<N_words; i++)
+    {
+        uint32_t word_left, word_right;
+        memcpy(&word_left, &str[index], S);
+        memcpy(&word_right, &str[N - S - index], S);
+
+        if( word_left != swap(word_right))
+        {
+            return false;
+        }
+        index += S;
+    }
+    // remaining bytes.
+    while(index < N_half)
+    {
+        if( str[index] != str[N-1-index])
+        {
+            return false;
+        }
+        index++;
+    }
+    return true;
+}
+
+
+
 int main () {
     faster;
     bool debug = true;
     // Get starting timepoint
-    // auto start = high_resolution_clock::now();
+    auto start = high_resolution_clock::now();
     if(debug){
         FILE *inp, *out;
         int correct = 0;
@@ -96,6 +149,7 @@ int main () {
         // input
         int q;
         string S;
+        
         cin >> S;
         cin >> q;
         // use dp to store the result of each query, with from i,j, i++ , j-- util i = j
@@ -105,7 +159,7 @@ int main () {
         FOR(i, 0, q){
             int start, end;
             cin >> start >> end;
-            if(IsPalindrome(S.substr(start - 1, end - start + 1))){
+            if(IsPalindromeWord(S.substr(start - 1, end - start + 1))){
                 cout << "YES" << endl;
             }
             else{
@@ -115,15 +169,15 @@ int main () {
         }
          
         // // Get ending timepoint
-        // auto stop = high_resolution_clock::now();
+        auto stop = high_resolution_clock::now();
     
-        // // Get duration. Substart timepoints to 
-        // // get duration. To cast it to proper unit
-        // // use duration cast method
-        // auto duration = duration_cast<microseconds>(stop - start);
+        // Get duration. Substart timepoints to 
+        // get duration. To cast it to proper unit
+        // use duration cast method
+        auto duration = duration_cast<microseconds>(stop - start);
     
-        // cout << "Time taken by function: "
-        //     << duration.count() << " microseconds" << endl;
+        cout << "Time taken by function: "
+            << duration.count() << " microseconds" << endl;
     
     }
     else{
