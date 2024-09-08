@@ -1,5 +1,5 @@
 /**
- * @file P08-ERASE.cpp
+ * @file P08-ERASE.cpp (done)
  * @author your name (you@domain.com)
  * @brief 
  * @version 0.1
@@ -32,77 +32,57 @@ typedef long long ll;
 typedef unsigned long long ull;
 
 
-int sum2(int a, int b, int &carry)
-{
-    int result = a+b+carry;
-    if (result >= 10) {
-        result -= 10;
-        carry = 1;
-    } else {
-        carry = 0;
-    }
-    return result;
-}
-
-string add(string a, string b)
-{
-    int s {0}, carry {0};
-
-    if (b.length() > a.length() ||
-        (b.length() == a.length() && b[0] - '0' > a[0] - '0')) {
-        swap(a, b);
-    }
-    string c = "";
-    int i = a.length() - 1, j = b.length() - 1;
-    while (i >= 0) {
-        if (j < 0) {
-            s = sum2(a[i] - '0', 0, carry);
-            // c += sum(a[i] - '0', m, 1);
-            i--;
-        } else {
-            s = sum2(a[i] - '0', b[j] - '0', carry);
-            i--;
-            j--;
-        }
-        c += s+'0';
-    }
-    if (carry)
-        c += '1';
-    for (int i = 0; i <= (c.length() - 1) / 2; i++)
-        swap(c[i], c[c.length() - 1 - i]);
-    return c;
-}
-
-
-int main () {
-    faster;
+// Function to add two large numbers represented as strings
+string addLargeNumbers(const string& num1, const string& num2) {
+    // Convert strings to integers
+    long long int n1 = stoll(num1);
+    long long int n2 = stoll(num2);
     
-    ll n;
+    // Add the numbers and convert back to string
+    long long int result = n1 + n2 + 10;
+    return to_string(result);
+}
+
+// Function to process the sequence
+string processSequence(vector<string>& nums) {
+    // Min-heap (priority queue) to handle large numbers
+    priority_queue<string, vector<string>, greater<string>> minHeap;
+
+    // Insert all numbers into the heap
+    for (const string& num : nums) {
+        minHeap.push(num);
+    }
+
+    // Process until only one number remains
+    while (minHeap.size() > 1) {
+        // Extract the two smallest numbers
+        string x = minHeap.top();
+        minHeap.pop();
+        string y = minHeap.top();
+        minHeap.pop();
+
+        // Compute the new number
+        string newNum = addLargeNumbers(x, y);
+
+        // Insert the new number back into the heap
+        minHeap.push(newNum);
+    }
+
+    // The last remaining number is the result
+    return minHeap.top();
+}
+
+int main() {
+    int n;
     cin >> n;
-    if (n < 1 || n > 100000){
-        cout << -1;
-        return 0;
+
+    vector<string> nums(n);
+
+    for (int i = 0; i < n; ++i) {
+        cin >> nums[i];
     }
 
-    // Method 1: Using std::accumulate, not good for large arrays
-    ull A[100000];
-    FOR(i, 0, n){
-        cin >> A[i];
-    }
-    cout << 10 * (n-1) + sum(A, 0, n) << endl;
+    cout  << processSequence(nums) << endl;
 
-    // Method 2: Using string-int conversion to store large numbers
-
-    // string A[100000];
-    // FOR(i, 0, n){
-    //     cin >> A[i];
-    // }
-
-    // string temp;
-    // for (int i = 0; i < n - 1; i++){
-    //     temp = add(A[i], A[i+1]);
-    //     temp = add(temp, "10");
-    // }
-    // cout << stol(temp) << endl;
     return 0;
 }

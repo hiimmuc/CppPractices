@@ -11,13 +11,9 @@
  * 
  */
 
-#include <iostream>
-#include <chrono>
-#include <cstring>
-#include <cstdint>
+#include <bits/stdc++.h>
 
 using namespace std;
-using namespace std::chrono;
 
 typedef long long ll;
 typedef unsigned long long ull;
@@ -37,166 +33,82 @@ typedef unsigned long long ull;
 #define fillchar(a,x) memset(a, x, sizeof (a))
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-// bool palindrome(string s){
-//     int left = 0, right = s.length() - 1; 
-//     while (left < right) { 
-//         if (s[left] != s[right]) { 
-//             return false; 
-//         } 
-//         left++; 
-//         right--; 
-//     } 
-//     return true; 
-// }
 
 
-// bool isPalindrome(const std::string &str)
-// {
-//     // std::equal(str.begin(), str.begin()+str.size()/2, str.rbegin(), str.rbegin()+str.size()/2);
+// Hashing parameters
+const long long MOD = 1e9 + 7;
+const long long BASE = 31;
 
-//   auto itStop = str.begin() + str.size() / 2;
-//   auto itBegin = str.begin();
-//   auto itReverse = str.rbegin();
-//   while (itBegin != itStop) {
-//     if (*itBegin != *itReverse)
-//       return false;
-//     else {
-//       itBegin++;
-//       itReverse++;
-//     }
-//   }
+// Function to compute hash and power arrays
+void computeHashesAndPowers(const string& S, vector<long long>& hash, vector<long long>& power) {
+    int n = S.size();
+    hash[0] = S[0] - 'a' + 1;
+    power[0] = 1;
 
-//   return true;
-
-// }
-
-
-bool IsPalindrome(const string& str)
-{
-    const size_t N = str.size();
-    const size_t N_half = N / 2;
-    for(size_t i=0; i<N_half; i++)
-    {
-        if( str[i] != str[N-1-i])
-        {
-            return false;
-        }
+    for (int i = 1; i < n; ++i) {
+        hash[i] = (hash[i - 1] * BASE + (S[i] - 'a' + 1)) % MOD;
+        power[i] = (power[i - 1] * BASE) % MOD;
     }
-    return true;
 }
 
-inline uint32_t swap(const uint32_t& val)
-{
-  union {
-    char c[4];
-    uint32_t n;
-  } data;
-  data.n = val;
-  std::swap(data.c[0], data.c[3]);
-  std::swap(data.c[1], data.c[2]);
-  return data.n;
+// Function to compute the hash of a substring
+long long getHash(const vector<long long>& hash, const vector<long long>& power, int l, int r) {
+    long long result = hash[r];
+    if (l > 0) {
+        result = (result - hash[l - 1] * power[r - l + 1] % MOD + MOD) % MOD;
+    }
+    return result;
 }
 
-inline bool IsPalindromeWord(const std::string& str)
-{
-    const size_t N = str.size();
-    const size_t N_half = (N/2);
-    const size_t S = sizeof(uint32_t);
-    // number of words of size S in N_half
-    const size_t N_words = (N_half / S);
+// Function to process queries to check if substrings are palindromes
+void processQueries(const string& S, const vector<pair<int, int>>& queries) {
+    int n = S.size();
 
-    // example: if N = 18, half string is 9 bytes and
-    // we need to compare 2 pairs of words and 1 pair of chars
+    // Compute hashes for the original string
+    vector<long long> hash(n), power(n);
+    computeHashesAndPowers(S, hash, power);
 
-    size_t index = 0;
+    // Compute hashes for the reversed string
+    string reversedS = S;
+    reverse(reversedS.begin(), reversedS.end());
+    vector<long long> revHash(n), revPower(n);
+    computeHashesAndPowers(reversedS, revHash, revPower);
 
-    for(size_t i=0; i<N_words; i++)
-    {
-        uint32_t word_left, word_right;
-        memcpy(&word_left, &str[index], S);
-        memcpy(&word_right, &str[N - S - index], S);
+    for (const auto& query : queries) {
+        int start = query.first - 1;
+        int end = query.second - 1;
 
-        if( word_left != swap(word_right))
-        {
-            return false;
+        // Length of the substring
+        int len = end - start + 1;
+
+        // Hash for the original substring
+        long long originalHash = getHash(hash, power, start, end);
+        cout << originalHash << endl;
+
+        // Hash for the reversed substring
+        long long reversedHash = getHash(revHash, revPower, n - end - 1, n - start - 1);
+        cout << reversedHash << endl;
+
+        if (originalHash == reversedHash) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
         }
-        index += S;
     }
-    // remaining bytes.
-    while(index < N_half)
-    {
-        if( str[index] != str[N-1-index])
-        {
-            return false;
-        }
-        index++;
-    }
-    return true;
 }
 
+int main() {
+    int q;
+    string S;
+    cin >> S;
+    cin >> q;
 
-
-int main () {
-    faster;
-    bool debug = true;
-    // Get starting timepoint
-    auto start = high_resolution_clock::now();
-    if(debug){
-        FILE *inp, *out;
-        int correct = 0;
-        inp=freopen("INP/P07.TXT", "r", stdin);
-        out=freopen("OUT/P07.TXT", "w", stdout);
-        // input
-        int q;
-        string S;
-        
-        cin >> S;
-        cin >> q;
-        // use dp to store the result of each query, with from i,j, i++ , j-- util i = j
-        // then if the next query is inside, we can return True, for example, 
-        // if 1-5 is palindrome, then 2-4 is also palindrome
-
-        FOR(i, 0, q){
-            int start, end;
-            cin >> start >> end;
-            if(IsPalindromeWord(S.substr(start - 1, end - start + 1))){
-                cout << "YES" << endl;
-            }
-            else{
-                cout << "NO" << endl;
-            }
-  
-        }
-         
-        // // Get ending timepoint
-        auto stop = high_resolution_clock::now();
-    
-        // Get duration. Substart timepoints to 
-        // get duration. To cast it to proper unit
-        // use duration cast method
-        auto duration = duration_cast<microseconds>(stop - start);
-    
-        cout << "Time taken by function: "
-            << duration.count() << " microseconds" << endl;
-    
+    vector<pair<int, int>> queries(q);
+    for (int i = 0; i < q; ++i) {
+        cin >> queries[i].first >> queries[i].second;
     }
-    else{
-        int q;
-        string S;
-        cin >> S;
-        cin >> q;
 
-        FOR(i, 0, q){
-            int start, end;
-            cin >> start >> end;
-            if(IsPalindrome(S.substr(start - 1, end - start + 1))){
-                cout << "YES" << endl;
-            }
-            else{
-                cout << "NO" << endl;
-            }
-  
-        }
-    }
+    processQueries(S, queries);
+
     return 0;
 }
