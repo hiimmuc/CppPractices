@@ -1,5 +1,5 @@
 /**
- * @file P07-PALIN.cpp  (Practices/P07-PALIN.cpp)
+ * @file P07-PALIN.cpp  (done
  * @author Vit hoc bai (thaovan.140902@gmail.com)
  * @brief Palindrome problem: Given a string S, and q queries, each query is a pair of integers (start, end). 
  * |S| <= 10^5, 1 <= q <= 10^5, 1 <= start <= end <= |S|; 

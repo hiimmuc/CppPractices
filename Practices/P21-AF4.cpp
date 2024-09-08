@@ -31,21 +31,34 @@ typedef long long ll;
 typedef unsigned long long ull;
 
 
-// Function to calculate GCD using Euclidean algorithm
-ll gcd(ll a, ll b) {
-    if (b == 0) return a;
-    return gcd(b, a % b);
+// // Function to calculate GCD using Euclidean algorithm
+// ll gcd(ll a, ll b) {
+//     if (b == 0) return a;
+//     return gcd(b, a % b);
+// }
+
+// // Function to calculate LCM
+// ll lcm(ll a, ll b) {
+//     if (a == 0 || b == 0) return 0; 
+//     return a / gcd(a, b) * b;
+// }
+
+ll gcd(ll a, ll b) {       
+    while (b != 0)
+        std::tie(a, b) = std::make_tuple(b, a % b);
+    return a;
 }
 
-// Function to calculate LCM
-ll lcm(ll a, ll b) {
-    if (a == 0 || b == 0) return 0; 
-    return (a * b) / gcd(a, b);
+ll lcm(ll a, ll b) {       
+    if (a > b)
+        return (a / gcd(a, b)) * b;
+    else
+        return (b / gcd(a, b)) * a;    
 }
 
 // Function to count pairs with LCM less than K
 int count_pairs(std::vector<ll>& arr, ll K) {
-    if (K <= 0) return -1;
+    // if (K <= 0) return -1;
     
     std::unordered_map<ll, int> freq;
     int count = 0;

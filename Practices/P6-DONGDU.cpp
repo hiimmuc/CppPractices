@@ -1,14 +1,16 @@
 
 /**
- * @brief Idea:gcd(a, b, c) = gcd(gcd(a, b), c) = gcd(a, gcd(b, c)) = gcd(gcd(a, c), b)
+ * @file P6-DONGDU.cpp (done)
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-09-08
  * 
- * @param a 
- * @param b 
- * @param c 
- * @return int 
+ * @copyright Copyright (c) 2024
+ * 
  */
 
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -29,41 +31,28 @@ typedef unsigned long long ull;
 
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-int gcd2(int a, int b) { 
+ll gcd2(ll a, ll b) { 
     if (b == 0) 
         return a; 
     return gcd2(b, a % b); 
 } 
 
-int gcd(int a, int b, int& x, int& y){
-   if(b == 0){
-       x=1;
-       y=0;
-       return a;
-   }
-   int x1, y1;
-   int d = gcd(b, a % b, x1, y1);
-   x = y1;
-   y = x1 - y1 * (a / b);
-   return d;
+// Function to compute the largest d such that a%d == b%d == c%d
+ll largest_common_modulo(ll a, ll b, ll c) {
+    // Calculate absolute differences
+    ll diff1 = std::abs(a - b);
+    ll diff2 = std::abs(b - c);
+    ll diff3 = std::abs(a - c);
+    
+    // The largest d must divide the GCD of the differences
+    return gcd2(diff1, gcd2(diff2, diff3));
 }
-
-int gcd3(int a, int b, int c) { 
-    // euclidean algorithm
-    return gcd2(gcd2(a, b), c); 
-} 
  
 
 int main () {
-    bool debug = false;
-    if(debug){
-        int correct = 0;
-        // read from files and compare results
-    }
-    else{
-        ll a,b,c;
-        cin >> a >> b >> c;
-        cout << gcd3(a, b, c);
-    }
+    faster;
+    ll a, b, c;
+    cin >> a >> b >> c;
+    cout << largest_common_modulo(a, b, c) << endl;
     return 0;
 }
