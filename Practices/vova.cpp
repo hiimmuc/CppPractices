@@ -24,14 +24,16 @@ v[i] is the number of elements in group i of array B
 
 #include <bits/stdc++.h>
 
+#include <omp.h>
 using namespace std;
 
 typedef long long ll;
 typedef unsigned long long ull;
+
 typedef vector<int> vi;
 typedef vector<vector<ll>> vvi;
 
-#define INF LLONG_MAX
+#define INF numeric_limits<ll>::max() 
 
 #define EL printf("\n")
 #define sz(A) (int) A.size()
@@ -54,51 +56,73 @@ vector<ll> computePrefixSum(const vector<int>& arr) {
 
 // Function to calculate the sum of a subarray using prefix sums
 ll subArraySum(const vector<ll>& prefixSum, int start, int end) {
-
     return prefixSum[end + 1] - prefixSum[start];
 }
-// Function to compute the cost between two groups
-ll calculateCost(int s, int u, int t, int v) {
-    return (s - u) * (t - v);
+
+// Function to calculate the cost for the group (A[g:i], B[h:j])
+ll calculateCost(const vector<ll>& prefixSumA, const vector<ll>& prefixSumB, int g, int i, int h, int j) {
+    ll s_i = subArraySum(prefixSumA, g, i - 1);
+    ll u_i = i - g;
+    ll t_i = subArraySum(prefixSumB, h, j - 1);
+    ll v_i = j - h;
+    ll cost = (s_i - u_i) * (t_i - v_i);
+
+    // Debugging output
+    cout << "Calculating cost for A[" << g << ":" << i - 1 << "] and B[" << h << ":" << j - 1 << "]" << " with ";
+    cout << "s_i: " << s_i << ", u_i: " << u_i << ", t_i: " << t_i << ", v_i: " << v_i << ", cost: " << cost << endl;
+
+    return cost;
 }
 
-
-// Function to minimize the cost function using dynamic programming with prefix sums
-ll minimizeCost(const vector<int>& A, const vector<int>& B) {
-    int n = A.size();
-    int m = B.size();
-    int k = min(n, m);  // Maximum number of partitions
-
-    // Compute prefix sums for both arrays A and B
+// Function to minimize the cost function using dynamic programming with prefix sums and return DP table
+vector<vector<ll>> minimizeCost(const vector<int>& A, const vector<int>& B) {
+    int n = A.size(), m = B.size();
+    int k = min (n, m);
     vector<ll> prefixSumA = computePrefixSum(A);
     vector<ll> prefixSumB = computePrefixSum(B);
-
-    // DP table dp[i][j] represents the minimum cost to divide the first i elements of A
-    // and first j elements of B into groups.
     vector<vector<ll>> dp(n + 1, vector<ll>(m + 1, INF));
 
-    // Base case: no elements, no groups, cost is 0.
-    dp[0][0] = 0;
+    dp[0][0] = 0; // Initialize base case
+    int total_loops = 0;
 
-    // Iterate over the number of elements considered from A (i) and B (j)
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= m; ++j) {
-            // DP recurrence: try every possible previous partition point but limit to k partitions
-            for (int g = max(0, i - k); g < i; ++g) {
+            dp[i][j] = INF;  // Ensure all values are initialized to INF
+            for (int g = max(0, i -k); g < i; ++g) {
                 for (int h = max(0, j - k); h < j; ++h) {
+                    total_loops++;
                     ll cost = calculateCost(prefixSumA, prefixSumB, g, i, h, j);
-                    cout << "cost: " << cost << endl;
-                    // Update the DP value for dp[i][j]
-                    if (dp[g][h] != INF) {
+                    if (dp[g][h] != INF) {  // Check if previous state is feasible
                         dp[i][j] = min(dp[i][j], dp[g][h] + cost);
                     }
                 }
             }
         }
     }
+    
+    cout << "Total loops: " << total_loops << endl;
+    return dp;  // Return the entire DP table
+}
 
-    // Print the DP table for debugging
-    cout << "DP Table:" << endl;
+
+int main() {
+    faster;
+    FILE* file = freopen("INP/VoVa.TXT", "r", stdin);
+    int n, m;
+    cin >> n >> m;
+    vector<int> A(n);
+    vector<int> B(m);
+    FOR(i,0,n) cin >> A[i];
+    FOR(i,0,m) cin >> B[i];
+
+    vector<int> longer = (m >= n) ? A : B;
+    vector<int> shorter = (m < n) ? A : B;
+    n = longer.size();
+    m = shorter.size();
+
+    // Output the minimum cost
+    vvi dp = minimizeCost(longer, shorter);
+    // 
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= m; ++j) {
             cout << dp[i][j] << " ";
@@ -106,25 +130,7 @@ ll minimizeCost(const vector<int>& A, const vector<int>& B) {
         cout << endl;
     }
 
-    // The final answer is the minimum cost to divide the entire arrays A and B
-    return dp[n][m];
-}
-
-
-
-int main() {
-    faster;
-    FILE* file = freopen("INP/VoVa.TXT", "r", stdin);
-    int m,n;
-    cin >> m >> n;
-    vector<int> A(m);
-    vector<int> B(n);
-    FOR(i,0,m) cin >> A[i];
-    FOR(i,0,n) cin >> B[i];
-
-    // Output the minimum cost
-    long long result = minimizeCost(A, B);
-    cout << result << endl;
+    cout << dp[n][m] << endl;
 
     return 0;
 }
