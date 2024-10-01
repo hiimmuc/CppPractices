@@ -37,7 +37,6 @@ typedef unsigned long long ull;
 
 typedef vector<int> vi;
 typedef vector<ll> vll;
-typedef vector<ull> vull;
 
 #define INF numeric_limits<ull>::max() 
 
@@ -107,11 +106,10 @@ ull minimizeCost(const vi& A, const vi& B) {
     prev[0] = 0;  // Base case initialization
 
     // Rolling array processing
-    for (int x = 1; x <= n; ++x) {
+    FOR(x, 1, n + 1) {
         curr[0] = INF;  // Reset current row start
-        for (int y = 1; y <= m; ++y) {
-            ull cost = (ull)(A[x - 1] - 1) * (B[y - 1] - 1);
-            curr[y] = min({prev[y - 1], prev[y], curr[y - 1]}) + cost;
+        FOR(y, 1, m + 1) {
+            curr[y] = min({prev[y - 1], prev[y], curr[y - 1]}) + (ull)(A[x - 1] - 1) * (B[y - 1] - 1);
         }
         prev = curr;  // Move current row to previous for next iteration
     }
@@ -126,7 +124,7 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<int> A(n, 0), B(m, 0);
+    vi A(n, 0), B(m, 0);
     FOR(i,0,n) cin >> A[i];
     FOR(i,0,m) cin >> B[i];
 
