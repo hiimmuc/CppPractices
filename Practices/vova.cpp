@@ -10,8 +10,7 @@
     Array A has n elements; array B has m elements, n and m > 1 
     We divide each array into the same k > 0 groups(k is unknown).; 
     each group has consecutive elements from each array, 
-    the minimum number of elements of each group is 1,
-    and total of elements in k groups of each array is n and m. 
+    the minimum number of elements of each group is 1.
 
     Minimize the expression:
     c = c[1] + c[2] + ... + c[k] with c[i] = (s[i] - u[i]) * (t[i] - v[i]) where:
@@ -24,6 +23,7 @@
     sum(s[i]) = sum(A[j]) for i = 1,2,...,k and j = 1,2,...,n
     sum(t[i]) = sum(B[j]) for i = 1,2,...,k and j = 1,2,...,m
     sum(u[i]) = n and sum(v[i]) = m
+    
 
     @example: A = [3,7,4] and B = [5, 2] minimum cost is 17 with k = 2
  */
@@ -97,8 +97,7 @@ ll minimizeCost2(const vi& A, const vi& B) {
     return dp[n][m];  // Return the entire DP table
 }
 
-
-// Function to minimize the cost function using dynamic programming with prefix sums and return DP table
+// NOTE: Optimize the above solution by using only two 1D vectors
 ull minimizeCost(const vi& A, const vi& B) {
     int n = A.size(), m = B.size();
     vector<ull> prev(m + 1, INF), curr(m + 1, INF);  // Only two 1D vectors
