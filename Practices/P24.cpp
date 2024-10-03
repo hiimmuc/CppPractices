@@ -8,70 +8,72 @@ typedef unsigned long long ull;
 typedef vector<int> vi;
 typedef vector<ll> vll;
 
-#define INF numeric_limits<ll>::max() 
+#define INF numeric_limits<int>::max() 
 
 #define FOR(i,start,end) for (int i = (start); i < (end); i++)
 #define FOD(i,start,end) for (int i = (end); i > (start); i--)
+#define FORA(i, arr) for (int& i: arr)
 
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 
-int minimumTransforms(int n, int h, const vector<int>& arr) {
-    int min_operations = numeric_limits<int>::max();
-    int current_operations = 0;
+int minimumOperations1(const vi& A, int n, int h) {
+    // NOTE: Brute force solution O(n * h) time
+    if (h > n) return -1; // Cannot have a subarray of length h if h > n
     
-    // Initialize the operations needed for the first window
-    for (int i = 0; i < h; ++i) {
-        int target_value = i + 1; // Increasing sequence starts at 1
-        if (arr[i] > target_value) {
-            // If the current value is greater than the target, no feasible way to decrement
-            return -1;
+    int minOperations = INF;
+
+    // Check each possible window of size h
+    FOR(start, 0, n - h + 1) {
+        int currentOperations = 0;
+        bool valid = true;
+
+        FOR(i, 0, h) {
+            int currentValue = A[start + i];
+            int targetValue = 1 + i;
+            
+            if (currentValue > targetValue) {
+                valid = false;
+                break; // If any value in the window is greater than its target, it's impossible to transform
+            } else {
+                currentOperations += targetValue - currentValue;
+            }
         }
-        current_operations += target_value - arr[i];
+
+        if (valid) {
+            minOperations = min(minOperations, currentOperations);
+        }
     }
 
-    min_operations = min(min_operations, current_operations);
+    return minOperations == INF ? -1 : minOperations;
+}
 
-    // Slide the window across the array
-    for (int i = 1; i <= n - h; ++i) {
-        // Remove the impact of the element going out of the window
-        current_operations -= (i - 1 + h) - arr[i - 1];
-        // Add the impact of the new element entering the window
-        int new_index = i + h - 1;
-        int new_target = h; // The last element in the increasing sequence
-        if (arr[new_index] > new_target) {
-            // If the current value is greater than the target, no feasible way to decrement
-            return -1;
+int minimumOperations(const vi& A, int n, int h) {
+    // NOTE: Prefix sum, O(n) time
+    if (h > n) return -1; // Not possible if h > n
+    
+    int minOperations = INF;
+    
+    vi prefixSum(n + 1, 0);
+
+    FOR(i, 1, n+1) prefixSum[i] = prefixSum[i-1] + A[i-1];
+
+    int sum_h = h * (h + 1) / 2;
+
+    FOR(i, h - 1, n) {
+        if (prefixSum[i] - prefixSum[i- h]  <= sum_h) {
+            minOperations = min(minOperations, sum_h - (prefixSum[i] - prefixSum[i - h]));
         }
-        current_operations += new_target - arr[new_index];
-
-        min_operations = min(min_operations, current_operations);
+        else{
+            continue;
+        }
     }
 
-    return (min_operations == numeric_limits<int>::max()) ? -1 : min_operations;
+    // Return the minimum operations found, or -1 if no valid window was found
+    return minOperations == INF ? -1 : minOperations;
 }
 
-int old_sol(int n, int h, const vector<int>& arr) {
-    vll prefix(n + 1, 0);
-    int curr = 1;
-    ll minVal = LLONG_MAX;
 
-	for (int i = 1;i <= n;i++) {
-		prefix[i] = prefix[i - 1] + arr[i];
-	}
-	for (int i = 1;i <= n;i++) {
-		if (arr[i] <= curr) {
-			curr = min(curr + 1, h);
-			if (curr == h) minVal = min(minVal,(ll)h*(h + 1)/2 - (prefix[i] - prefix[i - h]));
-		} else {
-			curr = 1;
-			while (arr[i] > 1 && i <= n) i++;
-		}
-	}
- 
-	if (minVal == LLONG_MAX) cout << -1;
-	else cout << minVal;
-}
 
 int main() {
     faster;
@@ -79,16 +81,11 @@ int main() {
     
     int n, h;
     cin >> n >> h;
-    vector<int> arr(n);
-    for (int& val : arr) cin >> val;
+    vi arr(n);
+    FORA(val, arr) cin >> val;
 
-    int result = old_sol(n, h, arr);
-    if (result == -1) {
-        cout << "-1\n";
-    } else {
-        cout << result << "\n";
-    }
+    int result = minimumOperations(arr, n, h);
+    cout << result << endl;
 
     return 0;
 }
-
