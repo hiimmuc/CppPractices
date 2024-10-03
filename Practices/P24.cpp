@@ -1,3 +1,15 @@
+/**
+ * @file P24.cpp    
+ * @author Vieoney (thaovan.140902@gmail.com)
+ * @version 0.1
+ * @date 2024-10-04
+ * @copyright Copyright (c) 2024
+ * @brief Given an array A of length  n, you want to find a subarray of length h 
+    where you can minimally modify the elements so that 
+    the subarray becomes an increasing sequence starting from 1 (i.e., [1, 2, ..., h]). 
+    Each modification consists of increasing an element by 1.
+ */
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -32,17 +44,11 @@ int minimumOperations1(const vi& A, int n, int h) {
             int currentValue = A[start + i];
             int targetValue = 1 + i;
             
-            if (currentValue > targetValue) {
-                valid = false;
-                break; // If any value in the window is greater than its target, it's impossible to transform
-            } else {
-                currentOperations += targetValue - currentValue;
-            }
+            if (currentValue > targetValue) { valid = false; break; }   
+            else currentOperations += targetValue - currentValue;
         }
 
-        if (valid) {
-            minOperations = min(minOperations, currentOperations);
-        }
+        if (valid) minOperations = min(minOperations, currentOperations);
     }
 
     return minOperations == INF ? -1 : minOperations;
