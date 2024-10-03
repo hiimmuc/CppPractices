@@ -79,7 +79,7 @@ ll minimizeCost1(const vi& A, const vi& B) {
 
 
 ll minimizeCost2(const vi& A, const vi& B) {
-    /*NOTE:  MEMORY LIMIT EXCEEDED and OVERFLOW 
+    /*NOTE:  MEMORY LIMIT EXCEEDED and OVERFLOW ISSUE
     --> change to unsigned long long and save only current and previous state
     */
     int n = A.size(), m = B.size();
