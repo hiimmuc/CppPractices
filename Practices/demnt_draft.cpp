@@ -4,9 +4,8 @@
  * @brief Given a number N, the task is to count the number of integers 
  * ------ less than or equal to N with a prime sum of digits.
  * ------FIXED:
- * ------1. The DP table size is adjusted to MAX_DIGITS * MAX_SUM * MAX_DIGITS
+ * ------1. The DP table size is adjusted to MAX_DIGITS * 2 * MAX_DIGITS
  * ------2. cnt is changed to count the sum of digits of the number only
- * ------3. compare current digit with the limit to determine the next digit
  * 
  * @version 0.1
  * @date 2024-10-09
