@@ -24,6 +24,7 @@ typedef vector<ll> vll;
 
 #define FOR(i,start,end) for (int i = (start); i < (end); i++)
 #define FOD(i,start,end) for (int i = (end); i > (start); i--)
+#define FOR_INC(i,start,end,inc) for (int i = (start); i < (end); i += (inc))
 #define FORA(i, arr) for (auto& i: arr)
 #define fill_array(a, x) memset(a, x, sizeof(a))
 
@@ -33,7 +34,7 @@ typedef vector<ll> vll;
 const int MAX_DIGITS = 19; // Maximum digits for numbers up to 1e18
 const int MAX_SUM = 171;   // Maximum possible sum of digits for a 19-digit number
 bool is_prime[MAX_SUM + 1]; // Prime check array
-ll dp[MAX_DIGITS][MAX_DIGITS][2]; // DP table for digit DP
+ll dp[MAX_DIGITS][2][MAX_DIGITS]; // DP table for digit DP
 
 /**
  * @brief Implements the Sieve of Eratosthenes algorithm to find all prime numbers up to a given limit.
@@ -47,10 +48,9 @@ ll dp[MAX_DIGITS][MAX_DIGITS][2]; // DP table for digit DP
 void sieve_of_eratosthenes() {
     fill_array(is_prime, true);
     is_prime[0] = is_prime[1] = false; // 0 and 1 are not prime
-    for (int i = 2; i * i <= MAX_SUM; i++) {
+    FOR(i, 2, MAX_SUM + 1) {
         if (is_prime[i]) {
-            for (int j = i * i; j <= MAX_SUM; j += i)
-                is_prime[j] = false;
+            FOR_INC(j, i * i, MAX_SUM + 1, i)is_prime[j] = false;
         }
     }
 }
@@ -64,7 +64,7 @@ void sieve_of_eratosthenes() {
 ll count_prime_sum_digits(vi &digits, int pos = 0, int sum = 0, bool tight = true) {
     if (pos == digits.size()) return is_prime[sum]; // Check if the sum of digits is prime
     
-    if (dp[pos][sum][tight] != -1) return dp[pos][sum][tight];
+    if (dp[pos][tight][sum] != -1) return dp[pos][tight][sum];
 
     int limit = tight ? digits[pos] : 9; // Determine the upper limit of the current digit
     ll ans = 0;
@@ -74,33 +74,9 @@ ll count_prime_sum_digits(vi &digits, int pos = 0, int sum = 0, bool tight = tru
         ans += count_prime_sum_digits(digits, pos + 1, sum + digit, tight && (digit == limit));
     }
 
-    return dp[pos][sum][tight] = ans;
+    return dp[pos][tight][sum] = ans;
 }
 
-/**
- * @brief Get the digits of a number.
- * 
- * @param n The number to get the digits of.
- * @return A vector containing the digits of the number in reverse order.
- */
-vi get_digits(ll n) {
-    vi digits;
-    while (n > 0) { digits.push_back(n % 10); n /= 10; }
-    reverse(digits.begin(), digits.end()); // Reverse to match the order of digits
-    return digits;
-}
-
-/**
- * @brief Count the number of integers less than or equal to n with a prime sum of digits.
- * 
- * @param n The upper limit of the numbers to consider.
- * @return The number of integers less than or equal to n with a prime sum of digits.
- */
-ll count_prime_sum_numbers(ll n) {
-    vi digits = get_digits(n); // Get digits of the number
-    memset(dp, -1, sizeof(dp));         // Initialize the DP table with -1
-    return count_prime_sum_digits(digits);
-}
 
 int main() {
     faster;
@@ -108,8 +84,13 @@ int main() {
 
     ll n;
     cin >> n;
+    // Get the digits of the number
+    vi digits;
+    while (n > 0) { digits.push_back(n % 10); n /= 10; }
+    reverse(digits.begin(), digits.end());
+    fill_array(dp, -1); // Initialize the DP table to -1
 
-    cout <<  count_prime_sum_numbers(n) << endl;
+    cout <<  count_prime_sum_digits(digits) << endl;
 
     return 0;
 }
