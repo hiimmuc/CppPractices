@@ -10,7 +10,7 @@
     Each modification consists of increasing an element by 1.
  */
 
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 
 using namespace std;
 
@@ -24,7 +24,7 @@ typedef vector<ll> vll;
 
 #define FOR(i,start,end) for (int i = (start); i < (end); i++)
 #define FOD(i,start,end) for (int i = (end); i > (start); i--)
-#define FORA(i, arr) for (int& i: arr)
+#define FORA(i, arr) for (auto& i: arr)
 
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
@@ -90,7 +90,7 @@ int main() {
     vi arr(n);
     FORA(val, arr) cin >> val;
 
-    int result = minimumOperations(arr, n, h);
+    int result = minimumOperations1(arr, n, h);
     cout << result << endl;
 
     return 0;
