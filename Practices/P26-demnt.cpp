@@ -78,6 +78,39 @@ ll count_prime_sum_digits(vi &digits, int pos = 0, int sum = 0, bool tight = tru
 }
 
 
+/**
+ * @brief Recursively solves the problem by exploring all possible digit combinations.
+ * 
+ * This function uses dynamic programming to count the number of valid digit combinations
+ * that satisfy certain conditions. It checks if the sum of the digits is a prime number.
+ * 
+ * @param s The input string representing the number.
+ * @param index The current index in the string being processed.
+ * @param reach_the_limit A flag indicating whether the current digit is constrained by the input number.
+ * @param last_digit_sum The sum of the digits processed so far.
+ * @return int The number of valid digit combinations that satisfy the conditions.
+ */
+int solve(const string &s, int index, int reach_the_limit, int last_digit_sum) {
+
+    if (index == s.length()) {
+        return is_prime[last_digit_sum] ? 1 : 0;  // Check if the digit sum is prime
+    }
+
+    if (dp[index][reach_the_limit][last_digit_sum] != -1) return dp[index][reach_the_limit][last_digit_sum];
+
+    int limit = reach_the_limit ? s[index] - '0' : 9;  // Determine the upper limit of the current digit
+    int ans = 0;
+
+    // Try all possible digits from 0 to limit
+    for (int digit = 0; digit <= limit; digit++) {
+        ans += solve(s, index + 1, reach_the_limit & (digit == limit), last_digit_sum + digit);
+    }
+
+    return dp[index][reach_the_limit][last_digit_sum] = ans;
+}
+
+
+// Main function
 int main() {
     faster;
     sieve_of_eratosthenes(); // Precompute prime numbers up to MAX_SUM
@@ -89,8 +122,11 @@ int main() {
     while (n > 0) { digits.push_back(n % 10); n /= 10; }
     reverse(digits.begin(), digits.end());
     fill_array(dp, -1); // Initialize the DP table to -1
-
+    // using vector representation
     cout <<  count_prime_sum_digits(digits) << endl;
+    // using string representation
+    string s = to_string(n); 
+    cout << solve(s, 0, 1, 0) << endl;
 
     return 0;
 }
