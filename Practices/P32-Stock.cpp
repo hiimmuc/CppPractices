@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 
 using namespace std;
 
@@ -27,23 +27,29 @@ typedef vector<ll> vll;
 #define FOR(i,start,end) for (int i = start; i < end; i++)
 #define FOD(i,start,end) for (int i = end; i > start; i--)
 
-#define min(a,b) a < b ? a : b
-#define max(a,b) a > b ? a : b
-#define sum(a) accumulate(a, a + sizeof(a)/sizeof(a[0]), 0)
+#define _min(a,b) ((a) < (b) ? (a) : (b))
+#define _max(a,b) ((a) > (b) ? (a) : (b))
+#define _sum(a) accumulate(a, a + sizeof(a)/sizeof(a[0]), 0)
+#define clr(x, c) memset(x, c, sizeof(x))
 
 #define faster ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 // start here
-int solve(vvi& prices, int S, int D, int M) {
-    vi dp(D + 1, 0);
-    FOR(i, 1, D + 1){
-        dp[i] = M;
-        FOD(k, i - 1,  0) FOR(j, 1, S + 1) {
-            dp[i] = max(dp[i], max(dp[k] / prices[j][k]  * prices[j][i] + dp[k] % prices[j][k], M / prices[j][k] * prices[j][i] + M % prices[j][k]));
-        }
-    }
+const int maxD = 19, maxN = 500009, maxS = 59;
+int prices[maxS][maxD], dp[maxN];
+int S,D,M;
 
-    return dp[D];
+int solve() {
+    FOR(j, 0, D-1){
+        clr(dp, 0);
+        FOR(i, 0, S){
+            FOR(k, prices[i][j], M+1){
+                dp[k] = _max(dp[k], dp[k - prices[i][j]] + prices[i][j+1] - prices[i][j]);
+            }   
+        }
+        M += *max_element(dp, dp + M + 1);
+    }
+    return M;
 }
 
 
@@ -51,13 +57,10 @@ int main(){
     faster;
     // input
     FILE* inp = freopen("INP/P32-Stock.TXT", "r", stdin);
-
-    int S, D, M;
+    // 
     cin >> S >> D >> M;
-    vvi prices(S, vi(D));
     FOR(i, 0, S) FOR(j, 0, D) cin >> prices[i][j]; 
-
     // solve
-    cout << solve(prices, S, D, M) << endl;
+    cout << solve() << endl;
     return 0;
 }
