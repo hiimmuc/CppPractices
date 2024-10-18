@@ -8,6 +8,7 @@
  * 
  * @copyright Copyright (c) 2024
  * 
+ * This program reads the number of stocks (S), the number of days (D), and the initial amount of money (M) from an input file.
  */
 #include "bits/stdc++.h"
 
@@ -39,12 +40,22 @@ const int maxD = 19, maxN = 500009, maxS = 59;
 int prices[maxS][maxD], dp[maxN];
 int S,D,M;
 
+/**
+ * @brief treat as knapsack problem
+ * dp array is used to store the maximum profit in a day
+ * assume that buying everyday and selling the next day, 
+ * if we dont sell, we can regard it as selling and then buying again
+ * The price is the volume and the stock price of next day is the weight
+ * 
+ * @return int 
+ */
 int solve() {
     FOR(j, 0, D-1){
         clr(dp, 0);
         FOR(i, 0, S){
-            FOR(k, prices[i][j], M+1){
-                dp[k] = _max(dp[k], dp[k - prices[i][j]] + prices[i][j+1] - prices[i][j]);
+            int cost = prices[i][j], value = prices[i][j+1];
+            FOR(k, cost, M+1){
+                dp[k] = _max(dp[k], dp[k - cost] + value - cost);
             }   
         }
         M += *max_element(dp, dp + M + 1);
