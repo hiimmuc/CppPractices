@@ -1,4 +1,4 @@
-/**
+/** cSpell: disable
  * @file P32-Stock.cpp
  * @author Vieoney (thaovan.140902@gmail.com)
  * @brief Matrix prices (S x D) represents the S stocks in D days. The value of prices[i][j] is the price of stock i on day j. 
@@ -10,6 +10,7 @@
  * 
  * This program reads the number of stocks (S), the number of days (D), and the initial amount of money (M) from an input file.
  */
+
 #include "bits/stdc++.h"
 
 using namespace std;
@@ -45,7 +46,6 @@ int S,D,M;
  * dp array is used to store the maximum profit in a day
  * assume that buying everyday and selling the next day, 
  * if we dont sell, we can regard it as selling and then buying again
- * The price is the volume and the stock price of next day is the weight
  * 
  * @return int 
  */
